@@ -72,6 +72,9 @@ export const messages: Record<Lang, Record<string, ReactNode>> = {
         calcula la superred que las agrupa.
       </>
     ),
+    "tabs.ip": "Calculadora IP",
+    "tabs.base": "Convertidor de Bases",
+    "tabs.sci": "Calculadora Científica",
     "footer.developer": "Desarrollado por",
     "hostsNet.label": "Hosts/Red",
     "subnets.heading": "Subredes",
@@ -148,6 +151,9 @@ export const messages: Record<Lang, Record<string, ReactNode>> = {
         it computes the supernet that aggregates them.
       </>
     ),
+    "tabs.ip": "IP Calculator",
+    "tabs.base": "Base Converter",
+    "tabs.sci": "Scientific Calculator",
     "footer.developer": "Develop by",
     "hostsNet.label": "Hosts/Net",
     "subnets.heading": "Subnets",
