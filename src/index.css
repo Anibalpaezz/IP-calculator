@@ -850,6 +850,10 @@ body {
   gap: 0.5rem;
 }
 
+.base-fields > .field {
+  flex: 0 0 auto;
+}
+
 .base-tag {
   display: inline-block;
   font-size: 0.7rem;
