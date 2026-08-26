@@ -1240,3 +1240,379 @@ body {
     font-size: 1.3rem;
   }
 }
+
+/* ===== SCI: Top controls row ===== */
+.sci-top-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sci-format-toggle {
+  display: flex;
+  gap: 0.2rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem;
+}
+
+.format-btn {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 0.25rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-family: inherit;
+}
+
+.format-btn:hover {
+  color: var(--ink);
+}
+
+.format-btn.is-active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.sci-decimals-select {
+  padding: 0.2rem 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-family: inherit;
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+  margin-left: 0.2rem;
+}
+
+/* ===== SCI: Display toggles ===== */
+.sci-display-toggles {
+  display: flex;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sci-toggle-btn {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted);
+  padding: 0.22rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  font-family: inherit;
+}
+
+.sci-toggle-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.sci-toggle-btn.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ===== SCI: Result secondary (fraction, DMS) ===== */
+.sci-result-secondary {
+  text-align: right;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 0.15rem 0.2rem 0;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+/* ===== SCI: Mode selector ===== */
+.sci-mode-selector {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.sci-mode-btn {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted);
+  padding: 0.4rem 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  font-family: inherit;
+  letter-spacing: 0.03em;
+}
+
+.sci-mode-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.sci-mode-btn.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(79, 70, 229, 0.25);
+}
+
+/* ===== SCI: Function panel ===== */
+.sci-fn-panel {
+  margin-bottom: 0.4rem;
+}
+
+.sci-fn-panel .sci-grid {
+  margin-bottom: 0.3rem;
+}
+
+/* ===== SCI: Memory buttons ===== */
+.sci-btn-mem {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #7c3aed;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.4rem 0.2rem;
+}
+
+.sci-btn-mem:hover {
+  background: #ede9fe;
+  color: #7c3aed;
+  border-color: #7c3aed;
+}
+
+.sci-mem-val {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--muted);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sci-btn-mem-store {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #059669;
+  padding: 0.4rem 0.2rem;
+}
+
+.sci-btn-mem-store:hover {
+  background: #d1fae5;
+  color: #059669;
+  border-color: #059669;
+}
+
+/* ===== SCI: Undo / Redo ===== */
+.sci-btn-undo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.sci-btn-undo:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.sci-btn-undo:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ===== SCI: Random button ===== */
+.sci-btn-rand {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0891b2;
+  font-style: italic;
+}
+
+.sci-btn-rand:hover {
+  background: #ecfeff;
+  color: #0891b2;
+  border-color: #0891b2;
+}
+
+/* ===== SCI: Ans button in numpad ===== */
+.sci-btn-ans {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ===== SCI: Memory panel ===== */
+.sci-mem-panel {
+  border-top: 1px solid var(--border);
+  padding-top: 0.6rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.sci-mem-panel-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.sci-mem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.3rem;
+}
+
+.sci-mem-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+}
+
+.sci-mem-name {
+  font-weight: 700;
+  color: var(--muted);
+  min-width: 1.6rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+
+.sci-mem-value {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.15rem 0.3rem;
+  border-radius: 4px;
+  text-align: left;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sci-mem-value:hover {
+  background: var(--accent-soft);
+}
+
+.sci-mem-input {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.78rem;
+  padding: 0.15rem 0.3rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--card);
+  color: var(--ink);
+  width: 100%;
+  min-width: 0;
+}
+
+.sci-mem-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+/* ===== SCI: Controls expanded (10 cols) ===== */
+.sci-controls {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 0.3rem;
+  margin-bottom: 0.4rem;
+}
+
+/* ===== SCI: Numpad expanded ===== */
+.sci-numpad {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+/* ===== Dark theme additions for sci ===== */
+:root[data-theme="dark"] .sci-btn-const {
+  color: #c4b5fd;
+}
+
+:root[data-theme="dark"] .sci-btn-const:hover {
+  background: rgba(167, 139, 250, 0.18);
+}
+
+:root[data-theme="dark"] .sci-btn-mem {
+  color: #c4b5fd;
+}
+
+:root[data-theme="dark"] .sci-btn-mem:hover {
+  background: rgba(167, 139, 250, 0.18);
+  border-color: #7c3aed;
+}
+
+:root[data-theme="dark"] .sci-btn-mem-store {
+  color: #6ee7b7;
+}
+
+:root[data-theme="dark"] .sci-btn-mem-store:hover {
+  background: rgba(52, 211, 153, 0.18);
+  border-color: #059669;
+}
+
+:root[data-theme="dark"] .sci-btn-rand {
+  color: #67e8f9;
+}
+
+:root[data-theme="dark"] .sci-btn-rand:hover {
+  background: rgba(8, 145, 178, 0.18);
+  border-color: #0891b2;
+}
+
+:root[data-theme="dark"] .sci-decimals-select {
+  background: #0f172a;
+  color: var(--ink);
+}
+
+:root[data-theme="dark"] .sci-mem-input {
+  background: #0f172a;
+  color: var(--ink);
+}
+
+/* ===== Responsive additions for sci ===== */
+@media (max-width: 640px) {
+  .sci-top-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sci-mode-selector {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .sci-mem-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sci-controls {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .sci-controls .sci-btn-undo,
+  .sci-controls .sci-btn-fn {
+    font-size: 0.85rem;
+  }
+}
