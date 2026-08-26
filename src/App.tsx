@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import { LanguageProvider } from "./components/LanguageProvider";
 import { useLang, type Lang } from "./i18n";
 import { IpCalculator } from "./components/IpCalculator";
@@ -86,6 +87,7 @@ export default function App() {
         tab={tab}
         onTabChange={setTab}
       />
+      <Analytics />
     </LanguageProvider>
   );
 }
