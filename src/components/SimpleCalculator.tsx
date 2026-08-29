@@ -14,11 +14,6 @@ function formatResult(value: number): string {
   return String(rounded);
 }
 
-function logAny(value: number, base: number): number {
-  if (value <= 0 || base <= 0 || base === 1) return NaN;
-  return Math.log(value) / Math.log(base);
-}
-
 const PRESET_BASES = [
   { base: 2, label: "log₂" },
   { base: 3, label: "log₃" },
@@ -52,6 +47,31 @@ function evaluate(expr: string): number {
 
   function parseAtom(): number {
     skip();
+    if (src.startsWith("ln(", i)) {
+      i += 3;
+      const inner = parseAddSub();
+      skip();
+      if (src[i] === ")") {
+        i++;
+        return inner > 0 ? Math.log(inner) : NaN;
+      }
+      return NaN;
+    }
+    const logMatch = /^log_(\d+(?:\.\d+)?)\(/;
+    const rest = src.slice(i);
+    const m = logMatch.exec(rest);
+    if (m) {
+      i += m[0].length;
+      const inner = parseAddSub();
+      skip();
+      if (src[i] === ")") {
+        i++;
+        const base = parseFloat(m[1]);
+        if (inner > 0 && base > 0 && base !== 1) return Math.log(inner) / Math.log(base);
+        return NaN;
+      }
+      return NaN;
+    }
     if (src[i] === "(") {
       i++;
       const val = parseAddSub();
@@ -181,16 +201,10 @@ export function SimpleCalculator() {
     });
   };
 
-  const applyLog = (base: number) => {
+  const insertLog = (base: number) => {
     setExpression((prev) => {
-      const value = evaluate(prev);
-      if (Number.isNaN(value)) return prev;
-      const baseLabel = base === Math.E ? "e" : formatResult(base);
-      setHistory((h) => [
-        { expression: `log_${baseLabel}(${prev}) =`, result: formatResult(logAny(value, base)) },
-        ...h,
-      ].slice(0, 12));
-      return formatResult(logAny(value, base));
+      const open = prev === "0" ? "" : prev;
+      return base === Math.E ? open + "ln(" : open + `log_${formatResult(base)}(`;
     });
   };
 
@@ -235,7 +249,7 @@ export function SimpleCalculator() {
               key={label}
               type="button"
               className="simple-btn simple-btn-fn simple-btn-log"
-              onClick={() => applyLog(base)}
+              onClick={() => insertLog(base)}
             >
               {label}
             </button>
@@ -255,7 +269,7 @@ export function SimpleCalculator() {
             onSubmit={(e) => {
               e.preventDefault();
               const base = parseFloat(customBase);
-              if (Number.isFinite(base) && base > 0 && base !== 1) applyLog(base);
+              if (Number.isFinite(base) && base > 0 && base !== 1) insertLog(base);
             }}
           >
             <label>
