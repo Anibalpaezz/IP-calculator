@@ -1072,13 +1072,6 @@ body {
   font-size: 1rem;
 }
 
-.sci-controls {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0.35rem;
-  margin-bottom: 0.4rem;
-}
-
 .sci-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -1628,10 +1621,10 @@ body {
   box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
-/* ===== SCI: Controls expanded (9 cols) ===== */
+/* ===== SCI: Controls use same 5-col grid as function panel & numpad ===== */
 .sci-controls {
   display: grid;
-  grid-template-columns: repeat(9, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 0.3rem;
   margin-bottom: 0.4rem;
 }
