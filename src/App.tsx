@@ -41,6 +41,25 @@ function initialTab(): CalcTab {
 
 const SEASON_MODES: SeasonMode[] = ["auto", "spring", "summer", "autumn", "winter"];
 
+const TAB_TITLES: Record<CalcTab, Record<Lang, string>> = {
+  ip: {
+    es: "Calculadora IP Online | Cálculo de Subredes, CIDR y Máscaras",
+    en: "IP Calculator Online | Subnet, CIDR and Mask Calculator",
+  },
+  base: {
+    es: "Convertidor de Bases | Calculadora de Binario, Octal y Hexadecimal",
+    en: "Base Converter | Binary, Octal and Hexadecimal Calculator",
+  },
+  sci: {
+    es: "Calculadora Online | Calculadora Simple con Logaritmos",
+    en: "Online Calculator | Simple Calculator with Logarithms",
+  },
+};
+
+function tabTitle(tab: CalcTab, lang: Lang): string {
+  return TAB_TITLES[tab][lang];
+}
+
 function initialSeason(): SeasonMode {
   const param = new URLSearchParams(window.location.search).get("season");
   if ((SEASON_MODES as string[]).includes(param ?? "")) return param as SeasonMode;
@@ -79,16 +98,13 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.lang = lang;
-    document.title =
-      lang === "es"
-        ? "Calculadora IP Online | Cálculo de Subredes, CIDR y Máscaras"
-        : "IP Calculator Online | Subnet, CIDR and Mask Calculator";
+    document.title = tabTitle(tab, lang);
     try {
       localStorage.setItem("ipcalc-lang", lang);
     } catch {
       /* ignore */
     }
-  }, [lang]);
+  }, [tab, lang]);
 
   useEffect(() => {
     const sp = new URLSearchParams(window.location.search);
