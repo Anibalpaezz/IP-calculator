@@ -3,7 +3,7 @@ import { LanguageProvider } from "./components/LanguageProvider";
 import { useLang, type Lang } from "./i18n";
 import { IpCalculator } from "./components/IpCalculator";
 import { BaseConverter } from "./components/BaseConverter";
-import { ScientificCalculator } from "./components/ScientificCalculator";
+import { SimpleCalculator } from "./components/SimpleCalculator";
 import { effectiveSeason, type SeasonMode } from "./lib/seasons";
 
 type Theme = "light" | "dark";
@@ -215,7 +215,7 @@ function AppShell(props: AppShellProps) {
         />
       )}
       {props.tab === "base" && <BaseConverter />}
-      {props.tab === "sci" && <ScientificCalculator />}
+      {props.tab === "sci" && <SimpleCalculator />}
 
       <footer className="footer">
         <p>

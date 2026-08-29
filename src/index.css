@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --bg: #0f172a;
   --bg-soft: #16213d;
   --card: #ffffff;
@@ -114,6 +114,18 @@ body {
   color: #e2e8f0;
   text-align: center;
   margin-bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 0.9rem;
 }
 
 .hero h1 {
@@ -545,21 +557,6 @@ body {
 }
 
 /* ===== theme toggle ===== */
-.hero {
-  position: relative;
-}
-
-.hero-actions {
-  position: absolute;
-  top: -0.4rem;
-  right: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
 .lang-switch {
   display: inline-flex;
   border: 1px solid #334155;
@@ -979,793 +976,147 @@ body {
   cursor: pointer;
 }
 
-/* ===== scientific calculator ===== */
-.scientific-calculator {
+
+/* ===== simple calculator ===== */
+.simple-calculator {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.scientific-calculator .calc-card {
+.simple-calculator .calc-card {
   padding: 1.25rem;
-  max-width: 480px;
+  max-width: 380px;
   margin: 0 auto;
   width: 100%;
 }
 
-.sci-angle-toggle {
-  display: flex;
-  gap: 0.3rem;
-  margin-bottom: 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.2rem;
-  width: fit-content;
-}
-
-.angle-btn {
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  padding: 0.3rem 0.75rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  font-family: inherit;
-}
-
-.angle-btn:hover {
-  color: var(--ink);
-}
-
-.angle-btn.is-active {
-  background: var(--accent);
-  color: #fff;
-}
-
-.sci-display {
-  margin-bottom: 0.75rem;
-}
-
-.sci-expression {
+.simple-display {
   width: 100%;
-  padding: 0.7rem 0.8rem;
+  padding: 0.9rem 1rem;
   border: 1px solid var(--border);
   border-radius: 10px;
   font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 1rem;
+  font-size: 2rem;
+  text-align: right;
   background: #f8fafc;
   color: var(--ink);
-  resize: vertical;
-  min-height: 3rem;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  line-height: 1.4;
+  margin-bottom: 0.35rem;
 }
 
-.sci-expression:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
-}
-
-.sci-result {
+.simple-subdisplay {
   text-align: right;
   font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--accent);
-  padding: 0.5rem 0.2rem 0.2rem;
-  min-height: 2rem;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.sci-result.sci-error {
-  color: var(--danger);
-  font-size: 1rem;
-}
-
-.sci-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0.35rem;
-}
-
-.sci-btn {
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--ink);
-  border-radius: 8px;
-  padding: 0.55rem 0.3rem;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.12s, border-color 0.12s, transform 0.1s;
-  font-family: inherit;
-  min-height: 2.4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sci-btn:active {
-  transform: scale(0.95);
-}
-
-.sci-btn:hover {
-  border-color: var(--accent);
-}
-
-.sci-btn-num {
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.sci-btn-num:hover {
-  background: var(--accent-soft);
-}
-
-.sci-btn-op {
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.sci-btn-op:hover {
-  background: var(--accent);
-  color: #fff;
-}
-
-.sci-btn-fn {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--muted);
+  min-height: 1.1rem;
+  margin-bottom: 0.75rem;
 }
 
-.sci-btn-fn:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
+.simple-keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.55rem;
 }
 
-.sci-btn-const {
-  font-style: italic;
-  color: #7c3aed;
+.simple-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 0.9rem 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.05s;
+  min-height: 3.2rem;
 }
 
-.sci-btn-const:hover {
-  background: #ede9fe;
+.simple-btn:active {
+  transform: scale(0.96);
 }
 
-.sci-btn-paren {
-  font-weight: 700;
-  font-size: 1.1rem;
+.simple-btn-num {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--ink);
 }
 
-.sci-btn-ac {
-  background: #fef2f2;
-  color: #dc2626;
-  border-color: #fecaca;
+.simple-btn-num:hover {
+  filter: brightness(0.97);
 }
 
-.sci-btn-ac:hover {
-  background: #dc2626;
-  color: #fff;
-  border-color: #dc2626;
+.simple-btn-fn {
+  background: #eef2f7;
+  border: 1px solid var(--border);
+  color: var(--ink);
 }
 
-.sci-btn-del {
-  background: #fffbeb;
-  color: #b45309;
-  border-color: #fde68a;
+.simple-btn-fn:hover {
+  filter: brightness(0.97);
 }
 
-.sci-btn-del:hover {
-  background: #b45309;
-  color: #fff;
-  border-color: #b45309;
-}
-
-.sci-btn-eq {
+.simple-btn-op {
   background: var(--accent);
   color: #fff;
-  border-color: var(--accent);
-  font-size: 1.2rem;
-  font-weight: 800;
 }
 
-.sci-btn-eq:hover {
-  background: #4338ca;
-  border-color: #4338ca;
+.simple-btn-op:hover {
+  filter: brightness(1.05);
 }
 
-.sci-btn-paren:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
+.simple-btn-eq {
+  background: var(--accent);
+  color: #fff;
+  grid-column: span 1;
 }
 
-/* history */
-.sci-history {
-  margin-top: 0.75rem;
+.simple-btn-eq:hover {
+  filter: brightness(1.05);
+}
+
+.simple-history {
+  margin-top: 1.25rem;
   border-top: 1px solid var(--border);
-  padding-top: 0.6rem;
+  padding-top: 0.75rem;
 }
 
-.sci-history-title {
-  font-size: 0.75rem;
-  font-weight: 600;
+.simple-history-title {
+  font-size: 0.8rem;
+  font-weight: 700;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
 }
 
-.sci-history-entry {
+.simple-history-entry {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  border: none;
-  background: transparent;
-  padding: 0.3rem 0.4rem;
-  border-radius: 6px;
-  cursor: pointer;
+  gap: 1rem;
+  padding: 0.25rem 0;
   font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.82rem;
-  transition: background 0.12s;
-  text-align: left;
+  font-size: 0.88rem;
 }
 
-.sci-history-entry:hover {
-  background: var(--accent-soft);
-}
-
-.sci-history-expr {
+.simple-history-expr {
   color: var(--muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 65%;
 }
 
-.sci-history-val {
-  color: var(--accent);
-  font-weight: 700;
-}
-
-/* ===== dark theme additions ===== */
-:root[data-theme="dark"] .base-error {
-  background: #2a1518;
-  border-color: #7f1d1d;
-  color: #fca5a5;
-}
-
-:root[data-theme="dark"] .base-select {
-  background: #0f172a;
+.simple-history-val {
   color: var(--ink);
 }
 
-:root[data-theme="dark"] .sci-expression {
-  background: #0f172a;
-  color: var(--ink);
-}
-
-:root[data-theme="dark"] .sci-expression:focus {
+:root[data-theme="dark"] .simple-display {
   background: #0f172a;
 }
 
-:root[data-theme="dark"] .sci-btn-const {
-  color: #c4b5fd;
+:root[data-theme="dark"] .simple-btn-fn {
+  background: #1e293b;
 }
 
-:root[data-theme="dark"] .sci-btn-const:hover {
-  background: rgba(167, 139, 250, 0.18);
-}
-
-:root[data-theme="dark"] .sci-btn-ac {
-  background: #2a1518;
-  color: #fca5a5;
-  border-color: #7f1d1d;
-}
-
-:root[data-theme="dark"] .sci-btn-ac:hover {
-  background: #dc2626;
-  color: #fff;
-  border-color: #dc2626;
-}
-
-:root[data-theme="dark"] .sci-btn-del {
-  background: #33271a;
-  color: #fbbf24;
-  border-color: #78350f;
-}
-
-:root[data-theme="dark"] .sci-btn-del:hover {
-  background: #b45309;
-  color: #fff;
-  border-color: #b45309;
-}
-
-/* ===== responsive additions ===== */
 @media (max-width: 640px) {
-  .calc-tabs {
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .calc-tab {
-    padding: 0.5rem 0.6rem;
-    font-size: 0.82rem;
-  }
-
-  .scientific-calculator .calc-card {
-    padding: 0.9rem;
-  }
-
-  .sci-grid,
-  .sci-ctrlzone-grid,
-  .sci-numpad {
-    gap: 0.25rem;
-  }
-
-  .sci-btn {
-    padding: 0.5rem 0.2rem;
-    font-size: 0.82rem;
-    min-height: 2.2rem;
-  }
-
-  .sci-result {
-    font-size: 1.3rem;
-  }
-}
-
-/* ===== SCI: Top controls row ===== */
-.sci-top-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.sci-format-toggle {
-  display: flex;
-  gap: 0.2rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.2rem;
-}
-
-.format-btn {
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  padding: 0.25rem 0.55rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  font-family: inherit;
-}
-
-.format-btn:hover {
-  color: var(--ink);
-}
-
-.format-btn.is-active {
-  background: var(--accent);
-  color: #fff;
-}
-
-.sci-decimals-select {
-  padding: 0.2rem 0.35rem;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 0.72rem;
-  font-family: inherit;
-  background: var(--card);
-  color: var(--ink);
-  cursor: pointer;
-  margin-left: 0.2rem;
-}
-
-/* ===== SCI: Display toggles ===== */
-.sci-display-toggles {
-  display: flex;
-  gap: 0.3rem;
-  margin-bottom: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.sci-toggle-btn {
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--muted);
-  padding: 0.22rem 0.55rem;
-  font-size: 0.72rem;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.12s, color 0.12s, border-color 0.12s;
-  font-family: inherit;
-}
-
-.sci-toggle-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.sci-toggle-btn.is-active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
-/* ===== SCI: Result secondary (fraction, DMS) ===== */
-.sci-result-secondary {
-  text-align: right;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--muted);
-  padding: 0.15rem 0.2rem 0;
-  white-space: nowrap;
-  overflow-x: auto;
-}
-
-/* ===== SCI: Mode selector ===== */
-.sci-mode-selector {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 0.3rem;
-  margin-bottom: 0.5rem;
-}
-
-.sci-mode-btn {
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--muted);
-  padding: 0.4rem 0.2rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.12s, color 0.12s, border-color 0.12s;
-  font-family: inherit;
-  letter-spacing: 0.03em;
-}
-
-.sci-mode-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-.sci-mode-btn.is-active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-  box-shadow: 0 1px 4px rgba(79, 70, 229, 0.25);
-}
-
-/* ===== SCI: Function panel ===== */
-.sci-fn-panel {
-  margin-bottom: 0.4rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  min-height: 12.4rem;
-}
-
-.sci-fn-panel .sci-grid {
-  margin-bottom: 0.3rem;
-  flex: none;
-}
-
-/* ===== SCI: Memory buttons ===== */
-.sci-btn-mem {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #7c3aed;
-  flex-direction: column;
-  gap: 0.1rem;
-  padding: 0.4rem 0.2rem;
-}
-
-.sci-btn-mem:hover {
-  background: #ede9fe;
-  color: #7c3aed;
-  border-color: #7c3aed;
-}
-
-.sci-mem-val {
-  font-size: 0.6rem;
-  font-weight: 600;
-  color: var(--muted);
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.sci-btn-mem-store {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #059669;
-  padding: 0.4rem 0.2rem;
-}
-
-.sci-btn-mem-store:hover {
-  background: #d1fae5;
-  color: #059669;
-  border-color: #059669;
-}
-
-/* ===== SCI: Undo / Redo ===== */
-.sci-btn-undo {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--muted);
-}
-
-.sci-btn-undo:hover:not(:disabled) {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.sci-btn-undo:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-/* ===== SCI: Random button ===== */
-.sci-btn-rand {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #0891b2;
-  font-style: italic;
-}
-
-.sci-btn-rand:hover {
-  background: #ecfeff;
-  color: #0891b2;
-  border-color: #0891b2;
-}
-
-/* ===== SCI: Ans button in numpad ===== */
-.sci-btn-ans {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-/* ===== SCI: Memory panel ===== */
-.sci-mem-panel {
-  border-top: 1px solid var(--border);
-  padding-top: 0.6rem;
-  margin-top: 0.4rem;
-  margin-bottom: 0.4rem;
-}
-
-.sci-mem-panel-title {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 0.4rem;
-}
-
-.sci-mem-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.3rem;
-}
-
-.sci-mem-item {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.78rem;
-}
-
-.sci-mem-name {
-  font-weight: 700;
-  color: var(--muted);
-  min-width: 1.6rem;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-}
-
-.sci-mem-value {
-  border: none;
-  background: transparent;
-  color: var(--accent);
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0.15rem 0.3rem;
-  border-radius: 4px;
-  text-align: left;
-  min-width: 0;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.sci-mem-value:hover {
-  background: var(--accent-soft);
-}
-
-.sci-mem-input {
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.78rem;
-  padding: 0.15rem 0.3rem;
-  border: 1px solid var(--accent);
-  border-radius: 4px;
-  background: var(--card);
-  color: var(--ink);
-  width: 100%;
-  min-width: 0;
-}
-
-.sci-mem-input:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--accent-soft);
-}
-
-/* ===== SCI: Functional zones ===== */
-.sci-zone {
-  border-top: 1px dashed var(--border);
-  margin-top: 0.85rem;
-  padding-top: 0.55rem;
-}
-
-.sci-zone-label {
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 0.4rem;
-}
-
-/* Control zone: AC / DEL / undo / redo (cluster aparte) */
-.sci-ctrlzone {
-  border-top: 1px dashed var(--border);
-  margin-top: 0.85rem;
-  padding-top: 0.55rem;
-}
-
-.sci-ctrlzone-label {
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 0.4rem;
-}
-
-.sci-ctrlzone-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.35rem;
-}
-
-/* Numpad: fixed 4 columns, large near-square tactile buttons */
-.sci-numpad {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
-}
-
-.sci-numpad .sci-btn {
-  min-height: 3.1rem;
-  aspect-ratio: 1.35 / 1;
-  font-size: 1.05rem;
-  padding: 0.3rem 0.2rem;
-}
-
-.sci-numpad .sci-btn-num {
-  font-size: 1.15rem;
-}
-
-/* ===== Dark theme additions for sci ===== */
-:root[data-theme="dark"] .sci-btn-const {
-  color: #c4b5fd;
-}
-
-:root[data-theme="dark"] .sci-btn-const:hover {
-  background: rgba(167, 139, 250, 0.18);
-}
-
-:root[data-theme="dark"] .sci-btn-mem {
-  color: #c4b5fd;
-}
-
-:root[data-theme="dark"] .sci-btn-mem:hover {
-  background: rgba(167, 139, 250, 0.18);
-  border-color: #7c3aed;
-}
-
-:root[data-theme="dark"] .sci-btn-mem-store {
-  color: #6ee7b7;
-}
-
-:root[data-theme="dark"] .sci-btn-mem-store:hover {
-  background: rgba(52, 211, 153, 0.18);
-  border-color: #059669;
-}
-
-:root[data-theme="dark"] .sci-btn-rand {
-  color: #67e8f9;
-}
-
-:root[data-theme="dark"] .sci-btn-rand:hover {
-  background: rgba(8, 145, 178, 0.18);
-  border-color: #0891b2;
-}
-
-:root[data-theme="dark"] .sci-decimals-select {
-  background: #0f172a;
-  color: var(--ink);
-}
-
-:root[data-theme="dark"] .sci-mem-input {
-  background: #0f172a;
-  color: var(--ink);
-}
-
-/* ===== Responsive additions for sci ===== */
-@media (max-width: 640px) {
-  .sci-top-controls {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .sci-mode-selector {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .sci-mem-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .sci-ctrlzone-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .sci-numpad .sci-btn {
+  .simple-btn {
     min-height: 2.9rem;
-  }
-
-  .sci-ctrlzone .sci-btn-undo,
-  .sci-ctrlzone .sci-btn-fn {
-    font-size: 0.85rem;
-  }
-
-  .sci-fn-panel {
-    min-height: 10.9rem;
-  }
-}
-
-/* ===== Header: controls never overlap the title on narrow screens ===== */
-/* Note: must come AFTER the base .hero-actions rule (line ~557) which is
-   position:absolute, so this override wins the cascade on small screens. */
-@media (max-width: 720px) {
-  .hero {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: static;
-  }
-
-  .hero-actions {
-    position: static;
-    margin-bottom: 0.75rem;
-    justify-content: center;
+    font-size: 1.05rem;
   }
 }
