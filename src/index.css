@@ -1167,19 +1167,24 @@ body {
   border-radius: 6px;
 }
 
-.simple-backspace {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.4rem;
-  margin-top: 0.5rem;
+.simple-btn-ac {
+  background: #ef4444;
+  border: 1px solid #ef4444;
+  color: #fff;
 }
 
-.simple-btn-back {
-  width: 25%;
-  padding: 0.6rem 0;
-  font-size: 1.1rem;
-  min-height: 2.6rem;
-  justify-self: end;
+.simple-btn-ac:hover {
+  filter: brightness(1.05);
+}
+
+.simple-btn-del {
+  background: #f59e0b;
+  border: 1px solid #f59e0b;
+  color: #fff;
+}
+
+.simple-btn-del:hover {
+  filter: brightness(1.05);
 }
 
 .simple-history-expr {

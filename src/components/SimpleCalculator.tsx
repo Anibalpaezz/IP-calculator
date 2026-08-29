@@ -173,14 +173,6 @@ export function SimpleCalculator() {
     });
   };
 
-  const toggleSign = () => {
-    setExpression((prev) => {
-      const value = evaluate(prev);
-      if (Number.isNaN(value)) return prev;
-      return formatResult(-value);
-    });
-  };
-
   const handlePercent = () => {
     setExpression((prev) => {
       const value = evaluate(prev);
@@ -284,8 +276,8 @@ export function SimpleCalculator() {
         )}
 
         <div className="simple-keypad">
-          <button type="button" className="simple-btn simple-btn-fn" onClick={handleClear}>AC</button>
-          <button type="button" className="simple-btn simple-btn-fn" onClick={toggleSign}>±</button>
+          <button type="button" className="simple-btn simple-btn-ac" onClick={handleClear}>AC</button>
+          <button type="button" className="simple-btn simple-btn-del" onClick={handleBackspace}>⌫</button>
           <button type="button" className="simple-btn simple-btn-fn" onClick={handlePercent}>%</button>
           <button type="button" className="simple-btn simple-btn-op" onClick={() => appendOperator("÷")}>÷</button>
 
@@ -308,10 +300,6 @@ export function SimpleCalculator() {
           <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("0")}>0</button>
           <button type="button" className="simple-btn simple-btn-num" onClick={() => appendParen(")")}>)</button>
           <button type="button" className="simple-btn simple-btn-eq" onClick={handleEqual}>=</button>
-        </div>
-
-        <div className="simple-backspace">
-          <button type="button" className="simple-btn simple-btn-fn simple-btn-back" onClick={handleBackspace}>⌫</button>
         </div>
 
         {history.length > 0 && (
