@@ -20,12 +20,27 @@ function valueToDigits(value: bigint, base: number): string {
   return negative ? "-" + result : result;
 }
 
+const PREFIXES: Record<number, string[]> = {
+  2: ["0b", "0B"],
+  8: ["0o", "0O"],
+  16: ["0x", "0X"],
+};
+
+function stripPrefix(s: string, base: number): string {
+  const prefixes = PREFIXES[base];
+  if (!prefixes) return s;
+  for (const p of prefixes) {
+    if (s.startsWith(p)) return s.slice(p.length);
+  }
+  return s;
+}
+
 function parseInput(raw: string, base: number): { intPart: bigint; fracPart: number; negative: boolean; error: string | null } {
   const trimmed = raw.trim();
   if (!trimmed) return { intPart: 0n, fracPart: 0, negative: false, error: null };
 
   let negative = false;
-  let s = trimmed;
+  let s = stripPrefix(trimmed, base);
   if (s[0] === "-") {
     negative = true;
     s = s.slice(1);
@@ -136,50 +151,44 @@ export function BaseConverter() {
 
     const newValues: Record<number, string> = {};
     for (const field of BASE_FIELDS) {
-      newValues[field.base] = formatResult(intPart, fracPart, field.base);
+      if (field.base === fromBase) {
+        newValues[field.base] = raw;
+      } else {
+        newValues[field.base] = formatResult(intPart, fracPart, field.base);
+      }
+    }
+
+    if (customBase !== 2 && customBase !== 8 && customBase !== 10 && customBase !== 16) {
+      if (customBase === fromBase) {
+        setCustomValue(raw);
+      } else {
+        setCustomValue(formatResult(intPart, fracPart, customBase));
+      }
     }
     setValues(newValues);
-
-    // Custom base
-    if (customBase !== 2 && customBase !== 8 && customBase !== 10 && customBase !== 16) {
-      setCustomValue(formatResult(intPart, fracPart, customBase));
-    }
   }, [customBase]);
 
   const handleFieldChange = (base: number, value: string) => {
-    setValues((prev) => ({ ...prev, [base]: value }));
     setSourceBase(base);
     convertFrom(base, value);
   };
 
   const handleCustomBaseChange = (newBase: number) => {
+    const fromBase = sourceBase;
+    const raw =
+      fromBase === 2 || fromBase === 8 || fromBase === 10 || fromBase === 16
+        ? values[fromBase] ?? ""
+        : customValue;
     setCustomBase(newBase);
-    // Re-convert from source
-    const raw = values[sourceBase] ?? "";
     if (raw.trim()) {
-      const { intPart, fracPart } = parseInput(raw, sourceBase);
+      const { intPart, fracPart } = parseInput(raw, fromBase);
       setCustomValue(formatResult(intPart, fracPart, newBase));
     }
   };
 
   const handleCustomValueChange = (value: string) => {
-    setCustomValue(value);
     setSourceBase(customBase);
-    const { intPart, fracPart, error: parseErr } = parseInput(value, customBase);
-    if (parseErr) {
-      setError(parseErr);
-      return;
-    }
-    setError(null);
-    if (!value.trim()) {
-      setValues({ 2: "", 8: "", 10: "", 16: "" });
-      return;
-    }
-    const newValues: Record<number, string> = {};
-    for (const field of BASE_FIELDS) {
-      newValues[field.base] = formatResult(intPart, fracPart, field.base);
-    }
-    setValues(newValues);
+    convertFrom(customBase, value);
   };
 
   return (

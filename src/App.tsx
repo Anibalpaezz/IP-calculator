@@ -4,6 +4,7 @@ import { useLang, type Lang } from "./i18n";
 import { IpCalculator } from "./components/IpCalculator";
 import { BaseConverter } from "./components/BaseConverter";
 import { ScientificCalculator } from "./components/ScientificCalculator";
+import { effectiveSeason, type SeasonMode } from "./lib/seasons";
 
 type Theme = "light" | "dark";
 type CalcTab = "ip" | "base" | "sci";
@@ -38,10 +39,25 @@ function initialTab(): CalcTab {
   return "ip";
 }
 
+const SEASON_MODES: SeasonMode[] = ["auto", "spring", "summer", "autumn", "winter"];
+
+function initialSeason(): SeasonMode {
+  const param = new URLSearchParams(window.location.search).get("season");
+  if ((SEASON_MODES as string[]).includes(param ?? "")) return param as SeasonMode;
+  try {
+    const stored = localStorage.getItem("ipcalc-season");
+    if ((SEASON_MODES as string[]).includes(stored ?? "")) return stored as SeasonMode;
+  } catch {
+    /* ignore */
+  }
+  return "auto";
+}
+
 export default function App() {
   const [theme, setTheme] = useState<Theme>(initialTheme);
   const [lang, setLang] = useState<Lang>(initialLang);
   const [tab, setTab] = useState<CalcTab>(initialTab);
+  const [season, setSeason] = useState<SeasonMode>(initialSeason);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -51,6 +67,15 @@ export default function App() {
       /* ignore */
     }
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.dataset.season = effectiveSeason(season);
+    try {
+      localStorage.setItem("ipcalc-season", season);
+    } catch {
+      /* ignore */
+    }
+  }, [season]);
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -71,10 +96,11 @@ export default function App() {
     else sp.delete("tab");
     if (theme) sp.set("theme", theme);
     if (lang) sp.set("lang", lang);
+    sp.set("season", season);
     const qs = sp.toString();
     const url = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
     window.history.replaceState(null, "", url);
-  }, [tab, theme, lang]);
+  }, [tab, theme, lang, season]);
 
   return (
     <LanguageProvider lang={lang} onLangChange={setLang}>
@@ -85,6 +111,8 @@ export default function App() {
         onLangChange={setLang}
         tab={tab}
         onTabChange={setTab}
+        season={season}
+        onSeasonChange={setSeason}
       />
     </LanguageProvider>
   );
@@ -97,6 +125,8 @@ interface AppShellProps {
   onLangChange: (l: Lang) => void;
   tab: CalcTab;
   onTabChange: (t: CalcTab) => void;
+  season: SeasonMode;
+  onSeasonChange: (s: SeasonMode) => void;
 }
 
 function AppShell(props: AppShellProps) {
@@ -122,6 +152,20 @@ function AppShell(props: AppShellProps) {
               EN
             </button>
           </div>
+          <label className="season-label">
+            <select
+              className="season-select"
+              value={props.season}
+              onChange={(e) => props.onSeasonChange(e.target.value as SeasonMode)}
+              aria-label={t("season.label") as string}
+            >
+              <option value="auto">{t("season.auto") as string}</option>
+              <option value="spring">{t("season.spring") as string}</option>
+              <option value="summer">{t("season.summer") as string}</option>
+              <option value="autumn">{t("season.autumn") as string}</option>
+              <option value="winter">{t("season.winter") as string}</option>
+            </select>
+          </label>
           <button type="button" className="theme-toggle" onClick={props.onToggleTheme}>
             {props.theme === "dark" ? t("theme.light") : t("theme.dark")}
           </button>

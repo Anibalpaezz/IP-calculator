@@ -186,6 +186,14 @@ export function ScientificCalculator() {
       _ans: value,
     }));
     setExpression(display);
+    requestAnimationFrame(() => {
+      const el = inputRef.current;
+      if (el) {
+        el.focus();
+        const pos = display.length;
+        el.selectionStart = el.selectionEnd = pos;
+      }
+    });
   }, [expression, angleMode, ctx, formatMode, formatDecimals]);
 
   const handleKeyDown = useCallback(
@@ -643,7 +651,6 @@ export function ScientificCalculator() {
           <button type="button" className="sci-btn sci-btn-undo" onClick={handleRedo} disabled={redoStack.length === 0}>↷</button>
           <button type="button" className="sci-btn sci-btn-paren" onClick={() => insert("(")}>(</button>
           <button type="button" className="sci-btn sci-btn-paren" onClick={() => insert(")")}>)</button>
-          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("/")}>÷</button>
           <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert(",")}>,</button>
           <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert(";")}>;</button>
           <button type="button" className="sci-btn sci-btn-eq" onClick={handleEqual}>=</button>
@@ -654,12 +661,20 @@ export function ScientificCalculator() {
           {[7, 8, 9].map((n) => (
             <button key={n} type="button" className="sci-btn sci-btn-num" onClick={() => insert(String(n))}>{n}</button>
           ))}
+          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("/")}>÷</button>
           <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("*")}>×</button>
-          <button type="button" className="sci-btn sci-btn-rand" onClick={() => insert(Math.random().toFixed(6))}>ℝ</button>
           {[4, 5, 6].map((n) => (
             <button key={n} type="button" className="sci-btn sci-btn-num" onClick={() => insert(String(n))}>{n}</button>
           ))}
           <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("-")}>−</button>
+          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("+")}>+</button>
+          {[1, 2, 3].map((n) => (
+            <button key={n} type="button" className="sci-btn sci-btn-num" onClick={() => insert(String(n))}>{n}</button>
+          ))}
+          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("^")}>^</button>
+          <button type="button" className="sci-btn sci-btn-rand" onClick={() => insert(Math.random().toFixed(6))}>ℝ</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("0")}>0</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert(".")}>.</button>
           <button
             type="button"
             className="sci-btn sci-btn-num sci-btn-ans"
@@ -667,10 +682,6 @@ export function ScientificCalculator() {
           >
             Ans
           </button>
-          {[1, 2, 3].map((n) => (
-            <button key={n} type="button" className="sci-btn sci-btn-num" onClick={() => insert(String(n))}>{n}</button>
-          ))}
-          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("+")}>+</button>
           <button
             type="button"
             className="sci-btn sci-btn-fn"
@@ -678,12 +689,9 @@ export function ScientificCalculator() {
           >
             Fact
           </button>
-          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("0")}>0</button>
-          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert(".")}>.</button>
-          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("^")}>^</button>
           <button
             type="button"
-            className="sci-btn sci-btn-num"
+            className="sci-btn sci-btn-num sci-btn-ans"
             onClick={() => { const v = variables._ans; if (v !== undefined) insert(v.toString()); }}
           >
             Ans

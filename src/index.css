@@ -20,6 +20,61 @@
   --bit-mask-ink: #991b1b;
   --shadow: 0 10px 30px rgba(2, 6, 23, 0.15);
   --radius: 14px;
+  --glow-1: #1e3a8a55;
+  --glow-2: #5b21b655;
+}
+
+/* ===== Seasonal palettes (Madrid, Spain) ===== */
+:root[data-season="spring"] {
+  --bg: #0d1f1a;
+  --bg-soft: #122b24;
+  --accent: #059669;
+  --accent-soft: #ecfdf5;
+  --glow-1: #05966955;
+  --glow-2: #4ade8055;
+}
+:root[data-season="spring"][data-theme="dark"] {
+  --accent: #10b981;
+  --accent-soft: rgba(16, 185, 129, 0.25);
+}
+
+:root[data-season="summer"] {
+  --bg: #1b1310;
+  --bg-soft: #2b1e17;
+  --accent: #ea580c;
+  --accent-soft: #fff7ed;
+  --glow-1: #ea580c55;
+  --glow-2: #f59e0b55;
+}
+:root[data-season="summer"][data-theme="dark"] {
+  --accent: #f97316;
+  --accent-soft: rgba(249, 115, 22, 0.25);
+}
+
+:root[data-season="autumn"] {
+  --bg: #221712;
+  --bg-soft: #33261c;
+  --accent: #d97706;
+  --accent-soft: #fffbeb;
+  --glow-1: #d9770655;
+  --glow-2: #dc262655;
+}
+:root[data-season="autumn"][data-theme="dark"] {
+  --accent: #f59e0b;
+  --accent-soft: rgba(245, 158, 11, 0.25);
+}
+
+:root[data-season="winter"] {
+  --bg: #0b1a2b;
+  --bg-soft: #132a3f;
+  --accent: #0284c7;
+  --accent-soft: #e0f2fe;
+  --glow-1: #0ea5e955;
+  --glow-2: #818cf855;
+}
+:root[data-season="winter"][data-theme="dark"] {
+  --accent: #0ea5e9;
+  --accent-soft: rgba(14, 165, 233, 0.25);
 }
 
 * {
@@ -42,8 +97,8 @@ body {
     Arial,
     sans-serif;
   background:
-    radial-gradient(1200px 600px at 20% -10%, #1e3a8a55, transparent 60%),
-    radial-gradient(1000px 500px at 100% 0%, #5b21b655, transparent 55%),
+    radial-gradient(1200px 600px at 20% -10%, var(--glow-1), transparent 60%),
+    radial-gradient(1000px 500px at 100% 0%, var(--glow-2), transparent 55%),
     var(--bg);
   color: var(--ink);
   min-height: 100vh;
@@ -552,6 +607,37 @@ body {
 
 .theme-toggle:hover {
   background: #1e293b;
+}
+
+.season-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--bg-soft);
+  border: 1px solid #334155;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+}
+
+.season-select {
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  padding: 0.15rem 0.1rem;
+}
+
+.season-select option {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.season-select:hover {
+  color: #fff;
 }
 
 .field-hint {
@@ -1377,10 +1463,15 @@ body {
 /* ===== SCI: Function panel ===== */
 .sci-fn-panel {
   margin-bottom: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 12.4rem;
 }
 
 .sci-fn-panel .sci-grid {
   margin-bottom: 0.3rem;
+  flex: none;
 }
 
 /* ===== SCI: Memory buttons ===== */
@@ -1537,10 +1628,10 @@ body {
   box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
-/* ===== SCI: Controls expanded (10 cols) ===== */
+/* ===== SCI: Controls expanded (9 cols) ===== */
 .sci-controls {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(9, 1fr);
   gap: 0.3rem;
   margin-bottom: 0.4rem;
 }
@@ -1618,5 +1709,9 @@ body {
   .sci-controls .sci-btn-undo,
   .sci-controls .sci-btn-fn {
     font-size: 0.85rem;
+  }
+
+  .sci-fn-panel {
+    min-height: 10.9rem;
   }
 }
