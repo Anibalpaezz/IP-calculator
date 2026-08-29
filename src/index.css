@@ -535,11 +535,6 @@ body {
     padding-top: 0.5rem;
   }
 
-  .hero-actions {
-    position: static;
-    margin-bottom: 0.75rem;
-  }
-
   .ipv6-line {
     grid-template-columns: 1fr;
   }
@@ -1309,7 +1304,8 @@ body {
   }
 
   .sci-grid,
-  .sci-controls {
+  .sci-ctrlzone-grid,
+  .sci-numpad {
     gap: 0.25rem;
   }
 
@@ -1621,17 +1617,60 @@ body {
   box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
-/* ===== SCI: Controls use same 5-col grid as function panel & numpad ===== */
-.sci-controls {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0.3rem;
+/* ===== SCI: Functional zones ===== */
+.sci-zone {
+  border-top: 1px dashed var(--border);
+  margin-top: 0.85rem;
+  padding-top: 0.55rem;
+}
+
+.sci-zone-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
   margin-bottom: 0.4rem;
 }
 
-/* ===== SCI: Numpad expanded ===== */
+/* Control zone: AC / DEL / undo / redo (cluster aparte) */
+.sci-ctrlzone {
+  border-top: 1px dashed var(--border);
+  margin-top: 0.85rem;
+  padding-top: 0.55rem;
+}
+
+.sci-ctrlzone-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.sci-ctrlzone-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.35rem;
+}
+
+/* Numpad: fixed 4 columns, large near-square tactile buttons */
 .sci-numpad {
-  grid-template-columns: repeat(5, 1fr);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.sci-numpad .sci-btn {
+  min-height: 3.1rem;
+  aspect-ratio: 1.35 / 1;
+  font-size: 1.05rem;
+  padding: 0.3rem 0.2rem;
+}
+
+.sci-numpad .sci-btn-num {
+  font-size: 1.15rem;
 }
 
 /* ===== Dark theme additions for sci ===== */
@@ -1695,16 +1734,38 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .sci-controls {
-    grid-template-columns: repeat(5, 1fr);
+  .sci-ctrlzone-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 
-  .sci-controls .sci-btn-undo,
-  .sci-controls .sci-btn-fn {
+  .sci-numpad .sci-btn {
+    min-height: 2.9rem;
+  }
+
+  .sci-ctrlzone .sci-btn-undo,
+  .sci-ctrlzone .sci-btn-fn {
     font-size: 0.85rem;
   }
 
   .sci-fn-panel {
     min-height: 10.9rem;
+  }
+}
+
+/* ===== Header: controls never overlap the title on narrow screens ===== */
+/* Note: must come AFTER the base .hero-actions rule (line ~557) which is
+   position:absolute, so this override wins the cascade on small screens. */
+@media (max-width: 720px) {
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: static;
+  }
+
+  .hero-actions {
+    position: static;
+    margin-bottom: 0.75rem;
+    justify-content: center;
   }
 }

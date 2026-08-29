@@ -455,25 +455,44 @@ export function ScientificCalculator() {
         return (
           <>
             <div className="sci-grid">
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("floor(")}>⌊x⌋</button>
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("ceil(")}>⌈x⌉</button>
               <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("abs(")}>|x|</button>
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("round(")}>rnd</button>
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("sign(")}>sgn</button>
-            </div>
-            <div className="sci-grid">
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("deriv(")}>d/dx</button>
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("integral(")}>∫ dx</button>
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("mod(")}>mod</button>
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("gcd(")}>MCD</button>
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("lcm(")}>MCM</button>
-            </div>
-            <div className="sci-grid">
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("rand()")}>rand</button>
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("randint(")}>R.int</button>
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("!")}>n!</button>
               <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("npr(")}>nPr</button>
               <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("ncr(")}>nCr</button>
-              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("!")}>n!</button>
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("gcd(")}>MCD</button>
+            </div>
+            <div className="sci-grid">
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("lcm(")}>MCM</button>
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("mod(")}>mod</button>
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("floor(")}>⌊x⌋</button>
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("ceil(")}>⌈x⌉</button>
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("round(")}>rnd</button>
+            </div>
+            <div className="sci-grid">
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("sign(")}>sgn</button>
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("rand()")}>rand</button>
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("deriv(")}>d/dx</button>
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("integral(")}>∫ dx</button>
+              <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert("randint(")}>R.int</button>
+            </div>
+            <div className="sci-grid">
+              <button
+                type="button"
+                className="sci-btn sci-btn-fn"
+                onClick={() => { const factors = primeFactors(Math.round(previewValue)); if (factors.length > 0) setExpression(factors.join("×")); }}
+              >
+                Fact
+              </button>
+              <button type="button" className="sci-btn sci-btn-rand" onClick={() => insert(Math.random().toFixed(6))}>ℝ</button>
+              <button
+                type="button"
+                className="sci-btn sci-btn-ans"
+                onClick={() => { const v = variables._ans; if (v !== undefined) insert(v.toString()); }}
+              >
+                Ans
+              </button>
+              <button type="button" className="sci-btn sci-btn-const" onClick={() => insert("pi")}>π</button>
+              <button type="button" className="sci-btn sci-btn-const" onClick={() => insert("e")}>e</button>
             </div>
           </>
         );
@@ -557,6 +576,17 @@ export function ScientificCalculator() {
           </button>
         </div>
 
+        {/* Control row: AC / DEL / undo / redo (cluster aparte del teclado) */}
+        <div className="sci-ctrlzone">
+          <div className="sci-ctrlzone-label">CONTROL</div>
+          <div className="sci-ctrlzone-grid">
+            <button type="button" className="sci-btn sci-btn-ac" onClick={handleAC}>AC</button>
+            <button type="button" className="sci-btn sci-btn-del" onClick={handleDEL}>⌫</button>
+            <button type="button" className="sci-btn sci-btn-undo" onClick={handleUndo} disabled={undoStack.length === 0}>↶</button>
+            <button type="button" className="sci-btn sci-btn-undo" onClick={handleRedo} disabled={redoStack.length === 0}>↷</button>
+          </div>
+        </div>
+
         {/* Expression input */}
         <div className="sci-display">
           <textarea
@@ -584,33 +614,37 @@ export function ScientificCalculator() {
           )}
         </div>
 
-        {/* Mode selector */}
-        <div className="sci-mode-selector">
-          {([
-            ["trig", "TRIG"],
-            ["log", "LOG"],
-            ["pow", "POW"],
-            ["comb", "CPB"],
-            ["mem", "MEM"],
-            ["util", "UTIL"],
-          ] as const).map(([mode, label]) => (
-            <button
-              key={mode}
-              type="button"
-              className={`sci-mode-btn ${sciMode === mode ? "is-active" : ""}`}
-              onClick={() => setSciMode(mode)}
-            >
-              {label}
-            </button>
-          ))}
+        {/* Zone: scientific functions */}
+        <div className="sci-zone">
+          <div className="sci-zone-label">FUNCTIONS</div>
+          <div className="sci-mode-selector">
+            {([
+              ["trig", "TRIG"],
+              ["log", "LOG"],
+              ["pow", "POW"],
+              ["comb", "CPB"],
+              ["mem", "MEM"],
+              ["util", "UTIL"],
+            ] as const).map(([mode, label]) => (
+              <button
+                key={mode}
+                type="button"
+                className={`sci-mode-btn ${sciMode === mode ? "is-active" : ""}`}
+                onClick={() => setSciMode(mode)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="sci-fn-panel">{renderFunctionPanel()}</div>
         </div>
 
-        {/* Function panel */}
-        <div className="sci-fn-panel">{renderFunctionPanel()}</div>
-
-        {/* Memory panel (collapsible) */}
+        {/* Zone: memory panel (collapsible) */}
         {showMemPanel && (
-          <div className="sci-mem-panel">
+          <div className="sci-zone">
+            <div className="sci-zone-label">MEMORY</div>
+            <div className="sci-mem-panel">
             <div className="sci-mem-panel-title">Memory Variables</div>
             <div className="sci-mem-grid">
               {[...MEM_VARS, "_ans", "_preans"].map((v) => (
@@ -640,62 +674,36 @@ export function ScientificCalculator() {
                 </div>
               ))}
             </div>
+            </div>
           </div>
         )}
 
-        {/* Control row */}
-        <div className="sci-controls">
-          <button type="button" className="sci-btn sci-btn-ac" onClick={handleAC}>AC</button>
-          <button type="button" className="sci-btn sci-btn-del" onClick={handleDEL}>⌫</button>
-          <button type="button" className="sci-btn sci-btn-undo" onClick={handleUndo} disabled={undoStack.length === 0}>↶</button>
-          <button type="button" className="sci-btn sci-btn-undo" onClick={handleRedo} disabled={redoStack.length === 0}>↷</button>
+        {/* Number pad (4 fixed columns, large tactile buttons) */}
+        <div className="sci-zone sci-zone-numpad">
+          <div className="sci-zone-label">KEYPAD</div>
+          <div className="sci-numpad">
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("7")}>7</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("8")}>8</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("9")}>9</button>
+          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("/")}>÷</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("4")}>4</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("5")}>5</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("6")}>6</button>
+          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("*")}>×</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("1")}>1</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("2")}>2</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("3")}>3</button>
+          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("-")}>−</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("0")}>0</button>
+          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert(".")}>.</button>
+          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("^")}>^</button>
+          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("+")}>+</button>
           <button type="button" className="sci-btn sci-btn-paren" onClick={() => insert("(")}>(</button>
           <button type="button" className="sci-btn sci-btn-paren" onClick={() => insert(")")}>)</button>
           <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert(",")}>,</button>
           <button type="button" className="sci-btn sci-btn-fn" onClick={() => insert(";")}>;</button>
           <button type="button" className="sci-btn sci-btn-eq" onClick={handleEqual}>=</button>
-        </div>
-
-        {/* Number pad */}
-        <div className="sci-grid sci-numpad">
-          {[7, 8, 9].map((n) => (
-            <button key={n} type="button" className="sci-btn sci-btn-num" onClick={() => insert(String(n))}>{n}</button>
-          ))}
-          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("/")}>÷</button>
-          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("*")}>×</button>
-          {[4, 5, 6].map((n) => (
-            <button key={n} type="button" className="sci-btn sci-btn-num" onClick={() => insert(String(n))}>{n}</button>
-          ))}
-          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("-")}>−</button>
-          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("+")}>+</button>
-          {[1, 2, 3].map((n) => (
-            <button key={n} type="button" className="sci-btn sci-btn-num" onClick={() => insert(String(n))}>{n}</button>
-          ))}
-          <button type="button" className="sci-btn sci-btn-op" onClick={() => insert("^")}>^</button>
-          <button type="button" className="sci-btn sci-btn-rand" onClick={() => insert(Math.random().toFixed(6))}>ℝ</button>
-          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert("0")}>0</button>
-          <button type="button" className="sci-btn sci-btn-num" onClick={() => insert(".")}>.</button>
-          <button
-            type="button"
-            className="sci-btn sci-btn-num sci-btn-ans"
-            onClick={() => { const v = variables._ans; if (v !== undefined) insert(v.toString()); }}
-          >
-            Ans
-          </button>
-          <button
-            type="button"
-            className="sci-btn sci-btn-fn"
-            onClick={() => { const factors = primeFactors(Math.round(previewValue)); if (factors.length > 0) setExpression(factors.join("×")); }}
-          >
-            Fact
-          </button>
-          <button
-            type="button"
-            className="sci-btn sci-btn-num sci-btn-ans"
-            onClick={() => { const v = variables._ans; if (v !== undefined) insert(v.toString()); }}
-          >
-            Ans
-          </button>
+          </div>
         </div>
 
         {/* History */}
