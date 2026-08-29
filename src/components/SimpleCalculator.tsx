@@ -14,12 +14,26 @@ function formatResult(value: number): string {
   return String(rounded);
 }
 
+function logAny(value: number, base: number): number {
+  if (value <= 0 || base <= 0 || base === 1) return NaN;
+  return Math.log(value) / Math.log(base);
+}
+
+const PRESET_BASES = [
+  { base: 2, label: "log₂" },
+  { base: 3, label: "log₃" },
+  { base: 10, label: "log₁₀" },
+  { base: Math.E, label: "ln" },
+] as const;
+
 export function SimpleCalculator() {
   const [display, setDisplay] = useState("0");
   const [previous, setPrevious] = useState<string | null>(null);
   const [operator, setOperator] = useState<string | null>(null);
   const [overwrite, setOverwrite] = useState(true);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [customBase, setCustomBase] = useState("2");
+  const [showCustomLog, setShowCustomLog] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -104,6 +118,19 @@ export function SimpleCalculator() {
     setOverwrite(true);
   };
 
+  const applyLog = (base: number) => {
+    const value = parseFloat(display);
+    if (Number.isNaN(value)) return;
+    const result = logAny(value, base);
+    const baseLabel = base === Math.E ? "e" : formatResult(base);
+    setHistory((prev) => [
+      { expression: `log_${baseLabel}(${formatResult(value)}) =`, result: formatResult(result) },
+      ...prev,
+    ].slice(0, 12));
+    setDisplay(formatResult(result));
+    setOverwrite(true);
+  };
+
   const handleBackspace = () => {
     if (overwrite) return;
     const next = display.slice(0, -1);
@@ -147,6 +174,52 @@ export function SimpleCalculator() {
           <div className="simple-subdisplay">
             {formatResult(parseFloat(previous))} {operator === "*" ? "×" : operator === "/" ? "÷" : operator}
           </div>
+        )}
+
+        <div className="simple-logrow">
+          {PRESET_BASES.map(({ base, label }) => (
+            <button
+              key={label}
+              type="button"
+              className="simple-btn simple-btn-fn simple-btn-log"
+              onClick={() => applyLog(base)}
+            >
+              {label}
+            </button>
+          ))}
+          <button
+            type="button"
+            className={`simple-btn simple-btn-fn simple-btn-log ${showCustomLog ? "is-active" : ""}`}
+            onClick={() => setShowCustomLog((v) => !v)}
+          >
+            logᵦ
+          </button>
+        </div>
+
+        {showCustomLog && (
+          <form
+            className="simple-logcustom"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const base = parseFloat(customBase);
+              if (Number.isFinite(base) && base > 0 && base !== 1) applyLog(base);
+            }}
+          >
+            <label>
+              Base
+              <input
+                type="number"
+                value={customBase}
+                onChange={(e) => setCustomBase(e.target.value)}
+                min="0.0001"
+                step="any"
+                className="simple-logbase-input"
+              />
+            </label>
+            <button type="submit" className="simple-btn simple-btn-op simple-btn-loggo">
+              Log
+            </button>
+          </form>
         )}
 
         <div className="simple-keypad">

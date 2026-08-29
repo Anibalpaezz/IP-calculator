@@ -1013,6 +1013,62 @@ body {
   margin-bottom: 0.75rem;
 }
 
+.simple-logrow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4rem;
+  margin: 0.35rem 0 0.6rem;
+}
+
+.simple-btn-log {
+  padding: 0.5rem 0;
+  font-size: 0.85rem;
+  min-height: 2.4rem;
+}
+
+.simple-btn-log.is-active {
+  outline: 2px solid var(--accent);
+}
+
+.simple-logcustom {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.simple-logcustom label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.simple-logbase-input {
+  width: 7rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.95rem;
+  background: var(--card);
+  color: var(--ink);
+}
+
+.simple-btn-loggo {
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  min-height: 2.4rem;
+}
+
+@media (max-width: 420px) {
+  .simple-btn-log {
+    font-size: 0.75rem;
+  }
+}
+
 .simple-keypad {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
