@@ -26,11 +26,84 @@ const PRESET_BASES = [
   { base: Math.E, label: "ln" },
 ] as const;
 
+function normalizeExpression(expr: string): string {
+  return expr
+    .replace(/×/g, "*")
+    .replace(/÷/g, "/")
+    .replace(/−/g, "-");
+}
+
+function evaluate(expr: string): number {
+  const src = normalizeExpression(expr);
+  let i = 0;
+
+  function skip() {
+    while (i < src.length && src[i] === " ") i++;
+  }
+
+  function parseNumber(): number {
+    skip();
+    const start = i;
+    if (src[i] === "-") i++;
+    while (i < src.length && /[0-9.]/.test(src[i])) i++;
+    const num = parseFloat(src.slice(start, i));
+    return Number.isNaN(num) ? NaN : num;
+  }
+
+  function parseAtom(): number {
+    skip();
+    if (src[i] === "(") {
+      i++;
+      const val = parseAddSub();
+      skip();
+      if (src[i] === ")") {
+        i++;
+        return val;
+      }
+      return NaN;
+    }
+    return parseNumber();
+  }
+
+  function parseMulDiv(): number {
+    let value = parseAtom();
+    while (true) {
+      skip();
+      const op = src[i];
+      if (op === "*" || op === "/") {
+        i++;
+        const rhs = parseAtom();
+        value = op === "*" ? value * rhs : rhs === 0 ? NaN : value / rhs;
+      } else {
+        break;
+      }
+    }
+    return value;
+  }
+
+  function parseAddSub(): number {
+    let value = parseMulDiv();
+    while (true) {
+      skip();
+      const op = src[i];
+      if (op === "+" || op === "-") {
+        i++;
+        const rhs = parseMulDiv();
+        value = op === "+" ? value + rhs : value - rhs;
+      } else {
+        break;
+      }
+    }
+    return value;
+  }
+
+  const result = parseAddSub();
+  skip();
+  return i === src.length ? result : NaN;
+}
+
 export function SimpleCalculator() {
-  const [display, setDisplay] = useState("0");
-  const [previous, setPrevious] = useState<string | null>(null);
-  const [operator, setOperator] = useState<string | null>(null);
-  const [overwrite, setOverwrite] = useState(true);
+  const [expression, setExpression] = useState("0");
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [customBase, setCustomBase] = useState("2");
   const [showCustomLog, setShowCustomLog] = useState(false);
@@ -41,111 +114,105 @@ export function SimpleCalculator() {
     inputRef.current?.focus();
   }, []);
 
-  const commitOperation = () => {
-    if (operator && previous !== null) {
-      const a = parseFloat(previous);
-      const b = parseFloat(display);
-      let result: number;
-      switch (operator) {
-        case "+":
-          result = a + b;
-          break;
-        case "-":
-          result = a - b;
-          break;
-        case "*":
-          result = a * b;
-          break;
-        case "/":
-          result = b === 0 ? NaN : a / b;
-          break;
-        default:
-          result = b;
+  const appendDigit = (digit: string) => {
+    if (digit === ".") {
+      setExpression((prev) => {
+        const lastNumber = prev.split(/[+\-*/×÷−()]/).pop() ?? "";
+        if (lastNumber.includes(".")) return prev;
+        if (lastNumber === "") return prev + "0.";
+        return prev + ".";
+      });
+      return;
+    }
+    setExpression((prev) => (prev === "0" ? digit : prev + digit));
+  };
+
+  const appendOperator = (op: string) => {
+    setExpression((prev) => {
+      const last = prev[prev.length - 1];
+      if (last === undefined || last === "(") {
+        if (op === "-") return prev + "-";
+        return prev;
       }
-      const text = `${formatResult(a)} ${
-        operator === "*" ? "×" : operator === "/" ? "÷" : operator
-      } ${formatResult(b)} =`;
-      setHistory((prev) => [{ expression: text, result: formatResult(result) }, ...prev].slice(0, 12));
-      setDisplay(formatResult(result));
-      setPrevious(null);
-      setOperator(null);
-      setOverwrite(true);
-    }
+      if ("+−×÷*/".includes(last)) {
+        return prev.slice(0, -1) + op;
+      }
+      return prev + op;
+    });
   };
 
-  const inputDigit = (digit: string) => {
-    if (overwrite) {
-      setDisplay(digit === "." ? "0." : digit);
-      setOverwrite(false);
-    } else {
-      if (digit === "." && display.includes(".")) return;
-      setDisplay(display === "0" && digit !== "." ? digit : display + digit);
-    }
-  };
-
-  const chooseOperator = (op: string) => {
-    if (operator && previous !== null && !overwrite) {
-      commitOperation();
-      const current = display;
-      setPrevious(current);
-    } else {
-      setPrevious(display);
-    }
-    setOperator(op);
-    setOverwrite(true);
+  const appendParen = (paren: string) => {
+    setExpression((prev) => {
+      if (paren === "(") {
+        return prev === "0" ? "(" : prev + "(";
+      }
+      const open = (prev.match(/\(/g) ?? []).length;
+      const close = (prev.match(/\)/g) ?? []).length;
+      if (open > close && !"+−×÷*/(".includes(prev[prev.length - 1])) {
+        return prev + ")";
+      }
+      return prev;
+    });
   };
 
   const handleEqual = () => {
-    commitOperation();
+    const value = evaluate(expression);
+    setHistory((prev) => [{ expression, result: formatResult(value) }, ...prev].slice(0, 12));
+    setExpression(formatResult(value));
   };
 
   const handleClear = () => {
-    setDisplay("0");
-    setPrevious(null);
-    setOperator(null);
-    setOverwrite(true);
-  };
-
-  const toggleSign = () => {
-    if (!display || display === "0") return;
-    setDisplay(display.startsWith("-") ? display.slice(1) : "-" + display);
-  };
-
-  const handlePercent = () => {
-    const value = parseFloat(display);
-    if (Number.isNaN(value)) return;
-    setDisplay(formatResult(value / 100));
-    setOverwrite(true);
-  };
-
-  const applyLog = (base: number) => {
-    const value = parseFloat(display);
-    if (Number.isNaN(value)) return;
-    const result = logAny(value, base);
-    const baseLabel = base === Math.E ? "e" : formatResult(base);
-    setHistory((prev) => [
-      { expression: `log_${baseLabel}(${formatResult(value)}) =`, result: formatResult(result) },
-      ...prev,
-    ].slice(0, 12));
-    setDisplay(formatResult(result));
-    setOverwrite(true);
+    setExpression("0");
   };
 
   const handleBackspace = () => {
-    if (overwrite) return;
-    const next = display.slice(0, -1);
-    setDisplay(next === "" || next === "-" ? "0" : next);
+    setExpression((prev) => {
+      if (prev === "0" || prev === "") return "0";
+      const next = prev.slice(0, -1);
+      return next === "" ? "0" : next;
+    });
+  };
+
+  const toggleSign = () => {
+    setExpression((prev) => {
+      const value = evaluate(prev);
+      if (Number.isNaN(value)) return prev;
+      return formatResult(-value);
+    });
+  };
+
+  const handlePercent = () => {
+    setExpression((prev) => {
+      const value = evaluate(prev);
+      if (Number.isNaN(value)) return prev;
+      return formatResult(value / 100);
+    });
+  };
+
+  const applyLog = (base: number) => {
+    setExpression((prev) => {
+      const value = evaluate(prev);
+      if (Number.isNaN(value)) return prev;
+      const baseLabel = base === Math.E ? "e" : formatResult(base);
+      setHistory((h) => [
+        { expression: `log_${baseLabel}(${prev}) =`, result: formatResult(logAny(value, base)) },
+        ...h,
+      ].slice(0, 12));
+      return formatResult(logAny(value, base));
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     const key = e.key;
     if (/[0-9]/.test(key)) {
-      inputDigit(key);
+      appendDigit(key);
     } else if (key === ".") {
-      inputDigit(".");
+      appendDigit(".");
     } else if (key === "+" || key === "-" || key === "*" || key === "/") {
       e.preventDefault();
-      chooseOperator(key === "*" ? "*" : key === "/" ? "/" : key);
+      appendOperator(key);
+    } else if (key === "(" || key === ")") {
+      appendParen(key);
     } else if (key === "Enter" || key === "=") {
       e.preventDefault();
       handleEqual();
@@ -164,17 +231,11 @@ export function SimpleCalculator() {
         <input
           ref={inputRef}
           className="simple-display"
-          value={display}
+          value={expression}
           readOnly
           onKeyDown={handleKeyDown}
           aria-label="Resultado"
         />
-
-        {previous !== null && operator && (
-          <div className="simple-subdisplay">
-            {formatResult(parseFloat(previous))} {operator === "*" ? "×" : operator === "/" ? "÷" : operator}
-          </div>
-        )}
 
         <div className="simple-logrow">
           {PRESET_BASES.map(({ base, label }) => (
@@ -223,40 +284,49 @@ export function SimpleCalculator() {
         )}
 
         <div className="simple-keypad">
-          <button className="simple-btn simple-btn-fn" onClick={handleClear}>AC</button>
-          <button className="simple-btn simple-btn-fn" onClick={toggleSign}>±</button>
-          <button className="simple-btn simple-btn-fn" onClick={handlePercent}>%</button>
-          <button className="simple-btn simple-btn-op" onClick={() => chooseOperator("/")}>÷</button>
+          <button type="button" className="simple-btn simple-btn-fn" onClick={handleClear}>AC</button>
+          <button type="button" className="simple-btn simple-btn-fn" onClick={toggleSign}>±</button>
+          <button type="button" className="simple-btn simple-btn-fn" onClick={handlePercent}>%</button>
+          <button type="button" className="simple-btn simple-btn-op" onClick={() => appendOperator("÷")}>÷</button>
 
-          <button className="simple-btn simple-btn-num" onClick={() => inputDigit("7")}>7</button>
-          <button className="simple-btn simple-btn-num" onClick={() => inputDigit("8")}>8</button>
-          <button className="simple-btn simple-btn-num" onClick={() => inputDigit("9")}>9</button>
-          <button className="simple-btn simple-btn-op" onClick={() => chooseOperator("*")}>×</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("7")}>7</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("8")}>8</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("9")}>9</button>
+          <button type="button" className="simple-btn simple-btn-op" onClick={() => appendOperator("×")}>×</button>
 
-          <button className="simple-btn simple-btn-num" onClick={() => inputDigit("4")}>4</button>
-          <button className="simple-btn simple-btn-num" onClick={() => inputDigit("5")}>5</button>
-          <button className="simple-btn simple-btn-num" onClick={() => inputDigit("6")}>6</button>
-          <button className="simple-btn simple-btn-op" onClick={() => chooseOperator("-")}>−</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("4")}>4</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("5")}>5</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("6")}>6</button>
+          <button type="button" className="simple-btn simple-btn-op" onClick={() => appendOperator("−")}>−</button>
 
-          <button className="simple-btn simple-btn-num" onClick={() => inputDigit("1")}>1</button>
-          <button className="simple-btn simple-btn-num" onClick={() => inputDigit("2")}>2</button>
-          <button className="simple-btn simple-btn-num" onClick={() => inputDigit("3")}>3</button>
-          <button className="simple-btn simple-btn-op" onClick={() => chooseOperator("+")}>+</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("1")}>1</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("2")}>2</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("3")}>3</button>
+          <button type="button" className="simple-btn simple-btn-op" onClick={() => appendOperator("+")}>+</button>
 
-          <button className="simple-btn simple-btn-fn" onClick={handleBackspace}>⌫</button>
-          <button className="simple-btn simple-btn-num" onClick={() => inputDigit("0")}>0</button>
-          <button className="simple-btn simple-btn-num" onClick={() => inputDigit(".")}>.</button>
-          <button className="simple-btn simple-btn-eq" onClick={handleEqual}>=</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendParen("(")}>(</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("0")}>0</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendParen(")")}>)</button>
+          <button type="button" className="simple-btn simple-btn-eq" onClick={handleEqual}>=</button>
+        </div>
+
+        <div className="simple-backspace">
+          <button type="button" className="simple-btn simple-btn-fn simple-btn-back" onClick={handleBackspace}>⌫</button>
         </div>
 
         {history.length > 0 && (
           <div className="simple-history">
             <div className="simple-history-title">History</div>
             {history.slice(0, 8).map((entry, i) => (
-              <div key={i} className="simple-history-entry">
-                <span className="simple-history-expr">{entry.expression}</span>
+              <button
+                key={i}
+                type="button"
+                className="simple-history-entry"
+                onClick={() => setExpression(entry.result)}
+              >
+                <span className="simple-history-expr">{entry.expression} =</span>
                 <span className="simple-history-val">{entry.result}</span>
-              </div>
+              </button>
             ))}
           </div>
         )}

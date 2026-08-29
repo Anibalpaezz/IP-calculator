@@ -1148,10 +1148,38 @@ body {
 .simple-history-entry {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 1rem;
-  padding: 0.25rem 0;
+  width: 100%;
+  padding: 0.35rem 0;
+  border: none;
+  background: transparent;
   font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
   font-size: 0.88rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.simple-history-entry:hover {
+  background: var(--card);
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+  border-radius: 6px;
+}
+
+.simple-backspace {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.simple-btn-back {
+  width: 25%;
+  padding: 0.6rem 0;
+  font-size: 1.1rem;
+  min-height: 2.6rem;
+  justify-self: end;
 }
 
 .simple-history-expr {
