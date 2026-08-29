@@ -186,8 +186,8 @@ function AppShell(props: AppShellProps) {
             {props.theme === "dark" ? t("theme.light") : t("theme.dark")}
           </button>
         </div>
-        <h1>{t("app.title")}</h1>
-        <p>{t("app.subtitle")}</p>
+        <h1>{t(`hero.${props.tab}.title`)}</h1>
+        <p>{t(`hero.${props.tab}.subtitle`)}</p>
       </header>
 
       {/* Calculator tab switcher */}

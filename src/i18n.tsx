@@ -11,6 +11,27 @@ export const messages: Record<Lang, Record<string, ReactNode>> = {
         resultados se actualizan mientras escribes.
       </>
     ),
+    "hero.ip.title": "Calculadora IP y de Subredes Online",
+    "hero.ip.subtitle": (
+      <>
+        Calculadora IPv4 (estilo <code>ipcalc</code>) e IPv6 con recálculo en tiempo real. Los
+        resultados se actualizan mientras escribes.
+      </>
+    ),
+    "hero.base.title": "Convertidor de Bases Online",
+    "hero.base.subtitle": (
+      <>
+        Convierte números entre binario, octal, decimal, hexadecimal y cualquier otra base al
+        instante.
+      </>
+    ),
+    "hero.sci.title": "Calculadora Simple Online",
+    "hero.sci.subtitle": (
+      <>
+        Calculadora con operaciones combinadas, paréntesis y logaritmos en cualquier base. Pulsa{" "}
+        <code>=</code> para calcular.
+      </>
+    ),
     "theme.light": "Tema claro",
     "theme.dark": "Tema oscuro",
     "season.label": "Estación",
@@ -95,6 +116,26 @@ export const messages: Record<Lang, Record<string, ReactNode>> = {
       <>
         IPv4 (ipcalc-style) and IPv6 calculator with real-time recalculation. Results update as you
         type.
+      </>
+    ),
+    "hero.ip.title": "IP Subnet Calculator Online",
+    "hero.ip.subtitle": (
+      <>
+        IPv4 (ipcalc-style) and IPv6 calculator with real-time recalculation. Results update as you
+        type.
+      </>
+    ),
+    "hero.base.title": "Online Base Converter",
+    "hero.base.subtitle": (
+      <>
+        Convert numbers between binary, octal, decimal, hexadecimal and any other base instantly.
+      </>
+    ),
+    "hero.sci.title": "Online Simple Calculator",
+    "hero.sci.subtitle": (
+      <>
+        Calculator with combined operations, parentheses and logarithms in any base. Press{" "}
+        <code>=</code> to compute.
       </>
     ),
     "theme.light": "Light theme",
