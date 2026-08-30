@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { evaluate, formatResult } from "../lib/calculator";
 
 interface HistoryEntry {
@@ -9,7 +9,7 @@ interface HistoryEntry {
 type FunctionCategory = "log" | "pow";
 
 interface CategoryButton {
-  label: string;
+  label: ReactNode;
   /** Texto a insertar en la expresión (reemplaza el "0" inicial). */
   text: string;
   /** Botón que depende de un valor configurable (p.ej. la base del log). */
@@ -23,19 +23,19 @@ interface CategoryDef {
 }
 
 const LOG_BUTTONS: CategoryButton[] = [
-  { label: "log2", text: "log_2(" },
-  { label: "log10", text: "log_10(" },
-  { label: "logx", text: "", custom: true },
-  { label: "logn", text: "ln(" },
-  { label: "eˣ", text: "exp(" },
+  { label: <span>log<sub>2</sub></span>, text: "log_2(" },
+  { label: <span>log<sub>10</sub></span>, text: "log_10(" },
+  { label: <span>log<sub>x</sub></span>, text: "", custom: true },
+  { label: <span>log<sub>n</sub></span>, text: "ln(" },
+  { label: <span>e<sup>x</sup></span>, text: "exp(" },
 ];
 
 const POW_BUTTONS: CategoryButton[] = [
-  { label: "n2", text: "^2" },
-  { label: "n3", text: "^3" },
-  { label: "nx", text: "^(" },
-  { label: "√x", text: "sqrt(" },
-  { label: "∛x", text: "cbrt(" },
+  { label: <span>x<sup>2</sup></span>, text: "^2" },
+  { label: <span>x<sup>3</sup></span>, text: "^3" },
+  { label: <span>x<sup>y</sup></span>, text: "^(" },
+  { label: <span>√x</span>, text: "sqrt(" },
+  { label: <span>∛x</span>, text: "cbrt(" },
 ];
 
 const CATEGORIES: CategoryDef[] = [
@@ -55,6 +55,11 @@ export function SimpleCalculator() {
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    const el = inputRef.current;
+    if (el) el.scrollLeft = el.scrollWidth;
+  }, [expression]);
 
   const appendDigit = (digit: string) => {
     if (digit === ".") {
@@ -197,7 +202,7 @@ export function SimpleCalculator() {
               if (btn.custom) {
                 return (
                   <button
-                    key={btn.label}
+                    key={btn.text}
                     type="button"
                     className={`simple-btn simple-btn-fn simple-btn-log ${showCustomLog ? "is-active" : ""}`}
                     onClick={() => setShowCustomLog((v) => !v)}
@@ -208,7 +213,7 @@ export function SimpleCalculator() {
               }
               return (
                 <button
-                  key={btn.label}
+                  key={btn.text}
                   type="button"
                   className="simple-btn simple-btn-fn simple-btn-log"
                   onClick={() => insertText(btn.text)}
