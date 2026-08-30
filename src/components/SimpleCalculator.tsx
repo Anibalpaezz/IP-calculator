@@ -1,132 +1,54 @@
 import { useState, useEffect, useRef } from "react";
+import { evaluate, formatResult } from "../lib/calculator";
 
 interface HistoryEntry {
   expression: string;
   result: string;
 }
 
-function formatResult(value: number): string {
-  if (Number.isNaN(value)) return "Error";
-  if (!Number.isFinite(value)) return "Infinity";
-  const str = String(value);
-  if (str.includes("e")) return str;
-  const rounded = Math.round(value * 1e10) / 1e10;
-  return String(rounded);
+type FunctionCategory = "log" | "pow";
+
+interface CategoryButton {
+  label: string;
+  /** Texto a insertar en la expresión (reemplaza el "0" inicial). */
+  text: string;
+  /** Botón que depende de un valor configurable (p.ej. la base del log). */
+  custom?: boolean;
 }
 
-const PRESET_BASES = [
-  { base: 2, label: "log₂" },
-  { base: 3, label: "log₃" },
-  { base: 10, label: "log₁₀" },
-  { base: Math.E, label: "ln" },
-] as const;
-
-function normalizeExpression(expr: string): string {
-  return expr
-    .replace(/×/g, "*")
-    .replace(/÷/g, "/")
-    .replace(/−/g, "-");
+interface CategoryDef {
+  id: FunctionCategory;
+  label: string;
+  buttons: CategoryButton[];
 }
 
-function evaluate(expr: string): number {
-  const src = normalizeExpression(expr);
-  let i = 0;
+const LOG_BUTTONS: CategoryButton[] = [
+  { label: "log₂", text: "log_2(" },
+  { label: "log₃", text: "log_3(" },
+  { label: "log₁₀", text: "log_10(" },
+  { label: "ln", text: "ln(" },
+  { label: "logᵦ", text: "", custom: true },
+];
 
-  function skip() {
-    while (i < src.length && src[i] === " ") i++;
-  }
+const POW_BUTTONS: CategoryButton[] = [
+  { label: "x²", text: "^2" },
+  { label: "x³", text: "^3" },
+  { label: "xⁿ", text: "^(" },
+  { label: "√x", text: "sqrt(" },
+  { label: "∛x", text: "cbrt(" },
+];
 
-  function parseNumber(): number {
-    skip();
-    const start = i;
-    if (src[i] === "-") i++;
-    while (i < src.length && /[0-9.]/.test(src[i])) i++;
-    const num = parseFloat(src.slice(start, i));
-    return Number.isNaN(num) ? NaN : num;
-  }
-
-  function parseAtom(): number {
-    skip();
-    if (src.startsWith("ln(", i)) {
-      i += 3;
-      const inner = parseAddSub();
-      skip();
-      if (src[i] === ")") {
-        i++;
-        return inner > 0 ? Math.log(inner) : NaN;
-      }
-      return NaN;
-    }
-    const logMatch = /^log_(\d+(?:\.\d+)?)\(/;
-    const rest = src.slice(i);
-    const m = logMatch.exec(rest);
-    if (m) {
-      i += m[0].length;
-      const inner = parseAddSub();
-      skip();
-      if (src[i] === ")") {
-        i++;
-        const base = parseFloat(m[1]);
-        if (inner > 0 && base > 0 && base !== 1) return Math.log(inner) / Math.log(base);
-        return NaN;
-      }
-      return NaN;
-    }
-    if (src[i] === "(") {
-      i++;
-      const val = parseAddSub();
-      skip();
-      if (src[i] === ")") {
-        i++;
-        return val;
-      }
-      return NaN;
-    }
-    return parseNumber();
-  }
-
-  function parseMulDiv(): number {
-    let value = parseAtom();
-    while (true) {
-      skip();
-      const op = src[i];
-      if (op === "*" || op === "/") {
-        i++;
-        const rhs = parseAtom();
-        value = op === "*" ? value * rhs : rhs === 0 ? NaN : value / rhs;
-      } else {
-        break;
-      }
-    }
-    return value;
-  }
-
-  function parseAddSub(): number {
-    let value = parseMulDiv();
-    while (true) {
-      skip();
-      const op = src[i];
-      if (op === "+" || op === "-") {
-        i++;
-        const rhs = parseMulDiv();
-        value = op === "+" ? value + rhs : value - rhs;
-      } else {
-        break;
-      }
-    }
-    return value;
-  }
-
-  const result = parseAddSub();
-  skip();
-  return i === src.length ? result : NaN;
-}
+const CATEGORIES: CategoryDef[] = [
+  { id: "log", label: "Log", buttons: LOG_BUTTONS },
+  { id: "pow", label: "Pow", buttons: POW_BUTTONS },
+];
 
 export function SimpleCalculator() {
   const [expression, setExpression] = useState("0");
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [customBase, setCustomBase] = useState("2");
   const [showCustomLog, setShowCustomLog] = useState(false);
+  const [activeCat, setActiveCat] = useState<FunctionCategory>("log");
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -154,7 +76,7 @@ export function SimpleCalculator() {
         if (op === "-") return prev + "-";
         return prev;
       }
-      if ("+−×÷*/".includes(last)) {
+      if ("+−×÷*/^".includes(last)) {
         return prev.slice(0, -1) + op;
       }
       return prev + op;
@@ -201,11 +123,20 @@ export function SimpleCalculator() {
     });
   };
 
-  const insertLog = (base: number) => {
+  const insertText = (text: string) => {
     setExpression((prev) => {
       const open = prev === "0" ? "" : prev;
-      return base === Math.E ? open + "ln(" : open + `log_${formatResult(base)}(`;
+      return open + text;
     });
+  };
+
+  const insertLog = (base: number) => {
+    insertText(base === Math.E ? "ln(" : `log_${formatResult(base)}(`);
+  };
+
+  const selectCategory = (cat: FunctionCategory) => {
+    setActiveCat(cat);
+    setShowCustomLog(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -214,9 +145,9 @@ export function SimpleCalculator() {
       appendDigit(key);
     } else if (key === ".") {
       appendDigit(".");
-    } else if (key === "+" || key === "-" || key === "*" || key === "/") {
+    } else if (key === "+" || key === "-" || key === "*" || key === "/" || key === "^") {
       e.preventDefault();
-      appendOperator(key);
+      appendOperator(key === "^" ? "^" : key);
     } else if (key === "(" || key === ")") {
       appendParen(key);
     } else if (key === "Enter" || key === "=") {
@@ -233,63 +164,84 @@ export function SimpleCalculator() {
 
   return (
     <div className="simple-calculator">
-      <div className="calc-card card">
-        <input
-          ref={inputRef}
-          className="simple-display"
-          value={expression}
-          readOnly
-          onKeyDown={handleKeyDown}
-          aria-label="Resultado"
-        />
-
-        <div className="simple-logrow">
-          {PRESET_BASES.map(({ base, label }) => (
+      <div className="simple-layout">
+        <aside className="func-panel" aria-label="Categorías de funciones">
+          {CATEGORIES.map((cat) => (
             <button
-              key={label}
+              key={cat.id}
               type="button"
-              className="simple-btn simple-btn-fn simple-btn-log"
-              onClick={() => insertLog(base)}
+              className={`func-cat ${cat.id === activeCat ? "is-active" : ""}`}
+              onClick={() => selectCategory(cat.id)}
             >
-              {label}
+              {cat.label}
             </button>
           ))}
-          <button
-            type="button"
-            className={`simple-btn simple-btn-fn simple-btn-log ${showCustomLog ? "is-active" : ""}`}
-            onClick={() => setShowCustomLog((v) => !v)}
-          >
-            logᵦ
-          </button>
-        </div>
+        </aside>
 
-        {showCustomLog && (
-          <form
-            className="simple-logcustom"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const base = parseFloat(customBase);
-              if (Number.isFinite(base) && base > 0 && base !== 1) insertLog(base);
-            }}
-          >
-            <label>
-              Base
-              <input
-                type="number"
-                value={customBase}
-                onChange={(e) => setCustomBase(e.target.value)}
-                min="0.0001"
-                step="any"
-                className="simple-logbase-input"
-              />
-            </label>
-            <button type="submit" className="simple-btn simple-btn-op simple-btn-loggo">
-              Log
-            </button>
-          </form>
-        )}
+        <div className="calc-card card">
+          <input
+            ref={inputRef}
+            className="simple-display"
+            value={expression}
+            readOnly
+            onKeyDown={handleKeyDown}
+            aria-label="Resultado"
+          />
 
-        <div className="simple-keypad">
+          <div className="simple-logrow">
+            {CATEGORIES.find((c) => c.id === activeCat)!.buttons.map((btn) => {
+              if (btn.custom) {
+                return (
+                  <button
+                    key={btn.label}
+                    type="button"
+                    className={`simple-btn simple-btn-fn simple-btn-log ${showCustomLog ? "is-active" : ""}`}
+                    onClick={() => setShowCustomLog((v) => !v)}
+                  >
+                    {btn.label}
+                  </button>
+                );
+              }
+              return (
+                <button
+                  key={btn.label}
+                  type="button"
+                  className="simple-btn simple-btn-fn simple-btn-log"
+                  onClick={() => insertText(btn.text)}
+                >
+                  {btn.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {showCustomLog && (
+            <form
+              className="simple-logcustom"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const base = parseFloat(customBase);
+                if (Number.isFinite(base) && base > 0 && base !== 1) insertLog(base);
+              }}
+            >
+              <label>
+                Base
+                <input
+                  type="number"
+                  value={customBase}
+                  onChange={(e) => setCustomBase(e.target.value)}
+                  min="0.0001"
+                  step="any"
+                  className="simple-logbase-input"
+                />
+              </label>
+              <button type="submit" className="simple-btn simple-btn-op simple-btn-loggo">
+                Log
+              </button>
+            </form>
+          )}
+
+          <div className="simple-keypad">
           <button type="button" className="simple-btn simple-btn-ac" onClick={handleClear}>AC</button>
           <button type="button" className="simple-btn simple-btn-del" onClick={handleBackspace}>⌫</button>
           <button type="button" className="simple-btn simple-btn-eq" onClick={handleEqual}>=</button>
@@ -332,6 +284,7 @@ export function SimpleCalculator() {
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   );

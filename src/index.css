@@ -991,6 +991,60 @@ body {
   width: 100%;
 }
 
+.simple-layout {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.func-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.5rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 64px;
+}
+
+.func-cat {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.func-cat:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.func-cat.is-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+@media (max-width: 480px) {
+  .simple-layout {
+    flex-direction: column;
+    align-items: center;
+  }
+  .func-panel {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
 .simple-display {
   width: 100%;
   padding: 0.9rem 1rem;
