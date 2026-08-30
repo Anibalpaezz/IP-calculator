@@ -1024,6 +1024,13 @@ body {
   padding: 0.5rem 0;
   font-size: 0.85rem;
   min-height: 2.4rem;
+  background: var(--accent-soft);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  color: var(--accent);
+}
+
+.simple-btn-log:hover {
+  filter: brightness(0.97);
 }
 
 .simple-btn-log.is-active {
@@ -1102,7 +1109,7 @@ body {
 }
 
 .simple-btn-fn {
-  background: #eef2f7;
+  background: #f1f5f9;
   border: 1px solid var(--border);
   color: var(--ink);
 }
@@ -1112,22 +1119,24 @@ body {
 }
 
 .simple-btn-op {
-  background: var(--accent);
-  color: #fff;
+  background: var(--accent-soft);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  color: var(--accent);
 }
 
 .simple-btn-op:hover {
-  filter: brightness(1.05);
+  filter: brightness(0.97);
 }
 
 .simple-btn-eq {
-  background: #16a34a;
-  color: #fff;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  color: #15803d;
   grid-column: span 1;
 }
 
 .simple-btn-eq:hover {
-  filter: brightness(1.05);
+  filter: brightness(0.97);
 }
 
 .simple-history {
@@ -1168,23 +1177,23 @@ body {
 }
 
 .simple-btn-ac {
-  background: #ef4444;
-  border: 1px solid #ef4444;
-  color: #fff;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
 }
 
 .simple-btn-ac:hover {
-  filter: brightness(1.05);
+  filter: brightness(0.97);
 }
 
 .simple-btn-del {
-  background: #f59e0b;
-  border: 1px solid #f59e0b;
-  color: #fff;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #b45309;
 }
 
 .simple-btn-del:hover {
-  filter: brightness(1.05);
+  filter: brightness(0.97);
 }
 
 .simple-history-expr {
