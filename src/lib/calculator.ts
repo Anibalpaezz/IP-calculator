@@ -63,6 +63,16 @@ export function evaluate(expr: string): number {
       }
       return NaN;
     }
+    if (src.startsWith("exp(", i)) {
+      i += 4;
+      const inner = parseAddSub();
+      skip();
+      if (src[i] === ")") {
+        i++;
+        return Math.exp(inner);
+      }
+      return NaN;
+    }
     const logMatch = /^log_(\d+(?:\.\d+)?)\(/;
     const rest = src.slice(i);
     const m = logMatch.exec(rest);

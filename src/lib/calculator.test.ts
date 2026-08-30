@@ -21,6 +21,11 @@ describe("evaluate - powers and roots", () => {
     expect(evaluate("cbrt(27)")).toBe(3);
   });
 
+  it("computes exponentials", () => {
+    expect(evaluate("exp(1)")).toBeCloseTo(Math.E);
+    expect(evaluate("exp(0)")).toBe(1);
+  });
+
   it("still computes logarithms", () => {
     expect(evaluate("log_2(8)")).toBe(3);
     expect(evaluate("log_10(100)")).toBe(2);

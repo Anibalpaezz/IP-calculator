@@ -23,17 +23,17 @@ interface CategoryDef {
 }
 
 const LOG_BUTTONS: CategoryButton[] = [
-  { label: "log₂", text: "log_2(" },
-  { label: "log₃", text: "log_3(" },
-  { label: "log₁₀", text: "log_10(" },
-  { label: "ln", text: "ln(" },
-  { label: "logᵦ", text: "", custom: true },
+  { label: "log2", text: "log_2(" },
+  { label: "log10", text: "log_10(" },
+  { label: "logx", text: "", custom: true },
+  { label: "logn", text: "ln(" },
+  { label: "eˣ", text: "exp(" },
 ];
 
 const POW_BUTTONS: CategoryButton[] = [
-  { label: "x²", text: "^2" },
-  { label: "x³", text: "^3" },
-  { label: "xⁿ", text: "^(" },
+  { label: "n2", text: "^2" },
+  { label: "n3", text: "^3" },
+  { label: "nx", text: "^(" },
   { label: "√x", text: "sqrt(" },
   { label: "∛x", text: "cbrt(" },
 ];
@@ -113,6 +113,10 @@ export function SimpleCalculator() {
       const next = prev.slice(0, -1);
       return next === "" ? "0" : next;
     });
+  };
+
+  const clearHistory = () => {
+    setHistory([]);
   };
 
   const handlePercent = () => {
@@ -270,7 +274,12 @@ export function SimpleCalculator() {
 
         {history.length > 0 && (
           <div className="simple-history">
-            <div className="simple-history-title">History</div>
+            <div className="simple-history-head">
+              <div className="simple-history-title">History</div>
+              <button type="button" className="simple-history-clear" onClick={clearHistory} aria-label="Borrar historial">
+                ✕
+              </button>
+            </div>
             {history.slice(0, 8).map((entry, i) => (
               <button
                 key={i}

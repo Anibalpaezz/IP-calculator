@@ -1069,15 +1069,19 @@ body {
 
 .simple-logrow {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.4rem;
   margin: 0.35rem 0 0.6rem;
 }
 
 .simple-btn-log {
+  min-width: 0;
   padding: 0.5rem 0;
   font-size: 0.85rem;
   min-height: 2.4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   background: var(--accent-soft);
   border: 1px solid rgba(148, 163, 184, 0.4);
   color: var(--accent);
@@ -1205,7 +1209,30 @@ body {
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.simple-history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 0.5rem;
+}
+
+.simple-history-clear {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 6px;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.simple-history-clear:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .simple-history-entry {
