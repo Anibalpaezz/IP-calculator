@@ -1121,7 +1121,7 @@ body {
 }
 
 .simple-btn-eq {
-  background: var(--accent);
+  background: #16a34a;
   color: #fff;
   grid-column: span 1;
 }

@@ -292,7 +292,7 @@ export function SimpleCalculator() {
         <div className="simple-keypad">
           <button type="button" className="simple-btn simple-btn-ac" onClick={handleClear}>AC</button>
           <button type="button" className="simple-btn simple-btn-del" onClick={handleBackspace}>⌫</button>
-          <button type="button" className="simple-btn simple-btn-fn" onClick={handlePercent}>%</button>
+          <button type="button" className="simple-btn simple-btn-eq" onClick={handleEqual}>=</button>
           <button type="button" className="simple-btn simple-btn-op" onClick={() => appendOperator("÷")}>÷</button>
 
           <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("7")}>7</button>
@@ -313,7 +313,7 @@ export function SimpleCalculator() {
           <button type="button" className="simple-btn simple-btn-num" onClick={() => appendParen("(")}>(</button>
           <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit("0")}>0</button>
           <button type="button" className="simple-btn simple-btn-num" onClick={() => appendParen(")")}>)</button>
-          <button type="button" className="simple-btn simple-btn-eq" onClick={handleEqual}>=</button>
+          <button type="button" className="simple-btn simple-btn-num" onClick={() => appendDigit(".")}>.</button>
         </div>
 
         {history.length > 0 && (
